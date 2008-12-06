@@ -14,6 +14,9 @@
 
 <div id="content">
 	<%= yield %>
+  <% unless admin? %>
+    <div id="new_post"><a href="/auth">Log in</a></div>
+  <% end %>
 </div>
 
 <div id="footer">

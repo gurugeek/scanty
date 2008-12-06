@@ -1,20 +1,47 @@
+require 'rubygems'
+require 'couchrest'
+
 require File.dirname(__FILE__) + '/../vendor/maruku/maruku'
 
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../vendor/syntax'
 require 'syntax/convertors/html'
 
-class Post < Sequel::Model
-	set_schema do
-		primary_key :id
-		text :title
-		text :body
-		text :slug
-		text :tags
-		timestamp :created_at
-	end
+CouchRest::Model.default_database = CouchRest.database!((Blog.url_base_database || '') + Blog.database_name)
 
+class Post < CouchRest::Model
+  key_accessor :title, :body, :slug, :tags
+  
+  view_by :created_at, :descending=>true
+  view_by :slug
+
+  #view_by tags not working yet...
+  view_by :tags,
+    :map => 
+      "function(doc) {
+        if (doc['couchrest-type'] == 'Post' && doc.tags) {
+          doc.tags.forEach(function(tag){
+            emit(tag, 1);
+          });
+        }
+      }",
+    :reduce => 
+      "function(keys, values, rereduce) {
+        return sum(values);
+    }" 
+  
+  timestamps!
+  
+  couchrest_type = 'Post'  
+  
+  def created_at
+    unless self['created_at'].nil?
+      self['created_at'] = Time.parse(self['created_at']) unless self['created_at'].respond_to?('year')
+    end
+    self['created_at']
+  end
+  
 	def url
-		d = created_at
+		d = self.created_at
 		"/past/#{d.year}/#{d.month}/#{d.day}/#{slug}/"
 	end
 
@@ -23,11 +50,11 @@ class Post < Sequel::Model
 	end
 
 	def body_html
-		to_html(body)
+		to_html(self['body'])
 	end
 
 	def summary
-		summary, more = split_content(body)
+		summary, more = split_content(self['body'])
 		summary
 	end
 
@@ -36,12 +63,12 @@ class Post < Sequel::Model
 	end
 
 	def more?
-		summary, more = split_content(body)
+		summary, more = split_content(self['body'])
 		more
 	end
 
 	def linked_tags
-		tags.split.inject([]) do |accum, tag|
+		self['tags'].inject([]) do |accum, tag|
 			accum << "<a href=\"/past/tags/#{tag}\">#{tag}</a>"
 		end.join(" ")
 	end
@@ -75,5 +102,3 @@ class Post < Sequel::Model
 		[ to_html(show.join("\n\n")), hide.size > 0 ]
 	end
 end
-
-Post.create_table unless Post.table_exists?
