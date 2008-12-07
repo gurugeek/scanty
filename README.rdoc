@@ -1,9 +1,12 @@
-= Scanty, a really small blog
+= Scanty, a really small blog, now on the couch
 
 == Overview
 
-Scanty is blogging software.  Software for my blog, to be exact:
+Scanty is blogging software.  It was created by Adam Wiggins for his blog:
 http://adam.blog.heroku.com
+
+The only things that I've changed with this version is the data-access. Rather than his default of
+Sequel, and a SQLite database, I have used CouchRest for accessing a CouchDB database.
 
 It is not a blogging engine, but it's small and easy to modify, so it could be
 the starting point for your blog, too.
@@ -17,13 +20,13 @@ the starting point for your blog, too.
 * Atom feed
 * Comments via Disqus
 * Web framework = Sinatra
-* ORM = Sequel
+* ORM = CouchRest
 
 == Dependencies
 
   $ gem install sinatra
 
-Sequel, Maruku, and Syntax are all vendored.
+CouchRest, Maruku, and Syntax are all vendored.
 
 == Setup
 
@@ -47,14 +50,13 @@ different port.
 
 == Database
 
-The default is a SQLite file named blog.db.  To use something else, set
-DATABASE_URL in your environment when running the app, i.e.:
+This version of Scanty uses CouchDB. If you use the default CouchDB set-up, then you should
+only need to alter the database_name in the Blog config struct in main.rb. Otherwise, add the base-url of 
+your CouchDB instance to url_base_database in the struct. If the database doesn't exist, it will be created
+automatically.
 
-  $ DATABASE_URL='mysql://localhost/myblog' ruby main.rb
-
-Or, modify the Sequel.connect statement at the top of main.rb.
-
-The database will be created automatically when the server is executed.
+for more information on CouchDB, check out the wiki at http://wiki.apache.org/couchdb/ or the homepage
+at http://incubator.apache.org/couchdb/
 
 == Comments
 
@@ -78,10 +80,13 @@ edit the CSS or the code as you see fit.
 Written by Adam Wiggins
 
 Patches contributed by: Christopher Swenson
+Forked by: Joel Tulloch
 
 Released under the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 http://github.com/adamwiggins/keen
 
 http://adam.blog.heroku.com/
+
+http://blog.jtulloch.com
 
