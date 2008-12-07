@@ -1,5 +1,4 @@
-require 'rubygems'
-require 'couchrest'
+require File.dirname(__FILE__) + '/../vendor/couchrest/couchrest'
 
 require File.dirname(__FILE__) + '/../vendor/maruku/maruku'
 
@@ -14,12 +13,11 @@ class Post < CouchRest::Model
   view_by :created_at, :descending=>true
   view_by :slug
 
-  #view_by tags not working yet...
   view_by :tags,
     :map => 
       "function(doc) {
-        if (doc['couchrest-type'] == 'Post' && doc.tags) {
-          doc.tags.forEach(function(tag){
+        if (doc['couchrest-type'] == 'Post' && doc['tags']) {
+          doc['tags'].forEach(function(tag){
             emit(tag, 1);
           });
         }
