@@ -25,8 +25,9 @@ the starting point for your blog, too.
 == Dependencies
 
   $ gem install sinatra
+  $ gem install jchris-couchrest
 
-CouchRest, Maruku, and Syntax are all vendored.
+Maruku and Syntax are vendored.
 
 == Setup
 
@@ -55,7 +56,9 @@ only need to alter the database_name in the Blog config struct in main.rb. Other
 your CouchDB instance to url_base_database in the struct. If the database doesn't exist, it will be created
 automatically.
 
-for more information on CouchDB, check out the wiki at http://wiki.apache.org/couchdb/ or the homepage
+for installation instructions, find your platform on the following page: http://wiki.apache.org/couchdb/Installation
+
+for more information on CouchDB, check out the rest of the wiki at http://wiki.apache.org/couchdb/ or the homepage
 at http://incubator.apache.org/couchdb/
 
 == Comments
