@@ -2,3 +2,5 @@
 tmp/*
 config/app_config.rb
 config/config.yml
+Capfile
+config/deploy.rb

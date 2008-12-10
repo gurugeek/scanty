@@ -10,10 +10,22 @@ class Post < CouchRest::Model
   use_database CouchRest.database!((Blog.url_base_database || '') + Blog.database_name)
   #use_database CouchRest.database!('test_db_75')
     
-  key_accessor :title, :body, :slug, :tags
+  key_accessor :title, :body, :slug, :tags, :not_public
   
   view_by :created_at, :descending=>true
   view_by :slug
+  view_by :not_public
+  view_by :created_at_and_public, :descending=>true,
+    :map =>
+      "function(doc) {
+        if(doc['couchrest-type'] == 'Post' && !doc['not_public']) {
+          emit(doc['created_at'],1);
+        }
+      }",
+    :reduce => 
+      "function(keys, values, rereduce) {
+        return sum(values);
+      }"
 
   view_by :tags,
     :map => 
@@ -28,6 +40,20 @@ class Post < CouchRest::Model
       "function(keys, values, rereduce) {
         return sum(values);
     }" 
+  
+  view_by :tags_and_public,
+    :map => 
+      "function(doc) {
+        if (doc['couchrest-type'] == 'Post' && doc['tags'] && !doc['not_public']) {
+          doc['tags'].forEach(function(tag){
+            emit(tag, 1);
+          });
+        }
+      }",
+    :reduce => 
+      "function(keys, values, rereduce) {
+        return sum(values);
+    }"
   
   timestamps!
   

@@ -31,12 +31,18 @@ layout 'layout'
 ### Public
 
 get '/' do
-  posts = Post.by_created_at :count=>10
+  posts = []
+  if admin?
+    posts = Post.by_created_at :count=>10
+  else
+    posts = Post.by_created_at_and_public :count=>10
+  end
 	erb :index, :locals => { :posts => posts }, :layout => false
 end
 
 get '/past/:year/:month/:day/:slug/' do
-  post = Post.by_slug(:key=>params[:slug], :count=>1).first
+  post = Post.by_slug(:key=>params[:slug], :count=>1).first	
+  auth if post.not_public
 	stop [ 404, "Page not found" ] unless post
 	@title = post.title
 	erb :post, :locals => { :post => post }
@@ -47,22 +53,35 @@ get '/past/:year/:month/:day/:slug' do
 end
 
 get '/past' do
-  posts = Post.by_created_at
+  if admin?
+    posts = Post.by_created_at
+  else
+    posts = Post.by_created_at_and_public
+  end
 	@title = "Archive"
 	erb :archive, :locals => { :posts => posts }
 end
 
 get '/past/tags/:tag' do
   tag = params[:tag]
-	posts = Post.by_tags(:key=>tag).sort_by do |post|
-    post.created_at
-	end # TODO:: Limit results to 30
+  # there's probably a better way to do this, but i'm tired, so fix it
+  # if you'd like
+  posts = []
+  if admin?
+    posts = Post.by_tags(:key=>tag).sort_by do |post|
+      post.created_at
+	  end
+  else
+    posts = Post.by_tags_and_public(:key=>tag).sort_by do |post|
+      post.created_at
+	  end
+  end
 	@title = "Posts tagged #{tag}"
 	erb :tagged, :locals => { :posts => posts, :tag => tag }
 end
 
 get '/feed' do
-	@posts = Post.by_created_at :count=>10
+	@posts = Post.by_created_at_and_public :count=>10
 	content_type 'application/atom+xml', :charset => 'utf-8'
 	builder :feed
 end
@@ -90,6 +109,11 @@ end
 post '/posts' do
 	auth
 	post = Post.new :title => params[:title], :tags => parse_tags(params[:tags]), :body => params[:body], :slug => Post.make_slug(params[:title])
+	if params[:publish].nil?
+  	post.not_public = true
+	else
+	  post.not_public = false
+	end
 	post.save
 	redirect post.url
 end
@@ -108,6 +132,11 @@ post '/past/:year/:month/:day/:slug/' do
 	post.title = params[:title]
 	post.tags = parse_tags(params[:tags])
 	post.body = params[:body]
+  if params[:publish].nil?
+  	post.not_public = true
+	else
+	  post.not_public = false
+	end
 	redirect post.url if post.save
 end
 

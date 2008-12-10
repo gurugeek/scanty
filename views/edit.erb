@@ -6,6 +6,12 @@
 	<div class="entry">
 		<textarea name="body"><%= post.body %></textarea>
 	</div>
-	<div class="edit"><input type="submit" value="Save" /></div>
+	<div class="edit">
+	  <div>
+	    <label for="publish">Publish?</label>
+	    <input type="checkbox" name="publish" />
+	  </div>
+	  <input type="submit" value="Save" />
+  </div>
 </div>
 </form>
