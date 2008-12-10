@@ -1,2 +1,4 @@
 *.log
-blog.db
+tmp/*
+config/app_config.rb
+config/config.yml

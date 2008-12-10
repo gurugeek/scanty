@@ -1,9 +1,8 @@
-port = 3030
-
+ports = [4567,4568]
 desc "Start the app server"
 task :start => :stop do
 	puts "Starting the blog"
-	system "ruby main.rb -p #{port} > access.log 2>&1 &"
+	system "thin -s 2 -C config/config.yml -R config/rackup.ru start"
 end
 
 # code lifted from rush
@@ -28,11 +27,13 @@ rescue Errno::ESRCH
 end
 
 desc "Stop the app server"
-task :stop do
-	m = `netstat -lptn | grep 0.0.0.0:#{port}`.match(/LISTEN\s*(\d+)/)
-	if m
-		pid = m[1].to_i
-		puts "Killing old server #{pid}"
-		kill_process(pid)
-	end
+task :stop do  
+  ports.each do |port|
+    m = `netstat -lptn | grep 127.0.0.1:#{port}`.match(/LISTEN\s*(\d+)/)
+    if m
+      pid = m[1].to_i
+      puts "Killing old server #{pid}"
+      kill_process(pid)
+    end
+  end
 end

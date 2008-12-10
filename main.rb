@@ -1,20 +1,6 @@
 require 'rubygems'
 require 'sinatra'
-
-configure do
-	require 'ostruct'
-	Blog = OpenStruct.new(
-		:title => 'scanty on the couch',
-		:author => 'Joel Tulloch',
-		:url_base => 'http://localhost:4567/',
-		:database_name => 'change_this',
-		:url_base_database => nil,
-		:admin_password => 'changethis',
-		:admin_cookie_key => 'admin_cookie_key',
-		:admin_cookie_value => '54l976913ace58',
-		:disqus_shortname => nil
-	)
-end
+require 'config/app_config.rb'
 
 error do
 	e = request.env['sinatra.error']
@@ -122,7 +108,6 @@ post '/past/:year/:month/:day/:slug/' do
 	post.title = params[:title]
 	post.tags = parse_tags(params[:tags])
 	post.body = params[:body]
-	post.save
-	redirect post.url
+	redirect post.url if post.save
 end
 
