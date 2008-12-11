@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'sinatra'
 require 'config/app_config.rb'
+require 'couchrest'
+require 'uuid'
 
 error do
 	e = request.env['sinatra.error']
@@ -11,6 +13,7 @@ end
 
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/lib')
 require 'post'
+require 'user'
 
 helpers do
 	def admin?
@@ -80,10 +83,19 @@ get '/past/tags/:tag' do
 	erb :tagged, :locals => { :posts => posts, :tag => tag }
 end
 
-get '/feed' do
+get '/feed/:uid' do
+  user = FeedUser.by_uid :key=>:uid, :count=>1
+  user.first.last_access = Time.now
+  user.save
 	@posts = Post.by_created_at_and_public :count=>10
 	content_type 'application/atom+xml', :charset => 'utf-8'
 	builder :feed
+end
+
+get '/feed' do
+	user = FeedUser.new :last_access => Time.now
+  user.save
+  redirect '/feed/' + user.uid, 301
 end
 
 get '/rss' do

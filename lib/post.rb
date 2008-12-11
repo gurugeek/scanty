@@ -1,6 +1,4 @@
 #require File.dirname(__FILE__) + '/../vendor/couchrest/couchrest'
-require 'rubygems'
-require 'couchrest'
 require File.dirname(__FILE__) + '/../vendor/maruku/maruku'
 
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../vendor/syntax'
@@ -8,7 +6,6 @@ require 'syntax/convertors/html'
 
 class Post < CouchRest::Model
   use_database CouchRest.database!((Blog.url_base_database || '') + Blog.database_name)
-  #use_database CouchRest.database!('test_db_75')
     
   key_accessor :title, :body, :slug, :tags, :not_public
   
