@@ -173,11 +173,86 @@ hr {
 	font-size: 120%;
 }
 
+/* Banner */
+
+#banner
+{
+  position:fixed;
+  height:2em;
+  top:0.5em;
+  left:2.5em;
+  right:0.5em;
+  background:#3F3F3F;
+  border:0.5em solid #0A0A0D;
+  z-index:100;
+}
+#banner a
+{
+  color:#BFBFB3;
+  margin: auto 0.5em;
+}
+
 #new_post {
 	position: absolute;
-	top: 1em;
-	right: 1em;
+	top:2.25em;
+	right: 0em;
 }
+#bar {
+  position: absolute;
+  top:0.25em;
+  left:1em;
+}
+#follow_me
+{
+  position: absolute;
+  top:0.25em;
+  right:0em;
+  color:#5F5F5F;
+}
+#follow_me img
+{
+  padding:0;
+  border:none;  
+  height:1.5em;
+  width:1.5em;
+}
+#bar_menu
+{
+  margin:0;
+  padding:0;
+  list-style-type: none;
+  float:left;
+}
+#bar_menu li
+{
+  margin:0;
+  padding:0;
+  float:left;
+  margin:0 1px 0 0;
+  display:inline;
+}
+#bar_menu a, #bar_menu p
+{
+  float:left;
+  padding: 0 5px;
+  font-weight:bolder;
+  text-decoration:none;
+  color:#AFAFA4;
+}
+#bar_menu a:hover
+{
+  text-decoration:underline;
+}
+#bar_menu a:active
+{
+  font-weight:bold;
+  color:#0A0A0D;
+}
+#bar_menu img
+{
+  border:none;
+}
+
 
 /* Post */
 
@@ -212,6 +287,12 @@ hr {
 	position: absolute;
 	top: 0;
 	right: 0;
+}
+
+.entry img.face
+{
+  margin:1em 0 1em 1em;
+  float:right;
 }
 
 /* Footer */
@@ -257,21 +338,21 @@ pre {
 
 pre span.attribute { color: #009900; }
 pre span.char { color: #F00; }
-pre span.class { color: #A020F0; font-weight: bold; }
-pre span.comment { color: #0000FF; }
-pre span.constant { color: #008B8B; }
-pre span.escape { color: #6A5ACD; }
+pre span.typ { color: #FFCB00; font-weight: bold; }
+pre span.com { color: #947F3D; }
+pre span.lit { color: #329998; }
+pre span.pln { color: #FFFFFF; }
 pre span.expr { color: #2222CC; }
-pre span.global { color: #11AA44; }
+pre span.atv { color: #11AA44; }
 pre span.ident { color: #CCCCCC; }
-pre span.keyword { color: #A52A2A; font-weight: bold; }
+pre span.kwd { color: #EE5400; font-weight: bold; }
 pre span.method { color: #008B8B; }
-pre span.module { color: #A020F0; font-weight: bold; }
-pre span.number { color: #DD00DD; }
-pre span.punct { color: #6A5ACD; }
-pre span.regex { color: #DD00DD; }
-pre span.string { color: #DD00DD; }
-pre span.symbol { color: #008B8B; }
+pre span.tag { color: #FC6210; font-weight: bold; }
+pre span.dec { color: #DD00DD; }
+pre span.pun { color: #6A5ACD; }
+pre span.atn { color: #DD00DD; }
+pre span.str { color: #64FD00; }
+pre span.pun { color: #CCCCCC; }
 
 /* Edit post */
 

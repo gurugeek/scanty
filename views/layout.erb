@@ -1,10 +1,38 @@
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title><%= @title || Blog.title %></title>
 	<link href="/main.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="/prettify.js"></script>
 </head>
-<body>
+<body onload="prettyPrint()">
+<div id="banner">
+  <div id="bar">
+    <ul id="bar_menu">
+      <li>
+        <a href="/">Home</a>
+      </li>
+      <li>
+        <a href="/past" title="the old stuff">Archive</a>
+      </li>
+    </ul>
+  </div>
+	<div id="new_post">
+	<% if admin? %>
+    <%="Readers: #{@readers}"%>
+	  <a href="/posts/new"">New post</a>
+	<% else %>
+    <a href="/auth">Log in</a>
+	<% end %>
+	</div>
+	<div id="follow_me">
+    <a href="/feed"><img src="/images/rss_32.png" title="click to subscribe to this blog's feed" alt="click to subscribe to this blog's feed" /></a>
+    <a href="http://www.twitter.com/"><img src="/images/twitter.png" title="click to follow me on twitter" alt="click to follow me on twitter" /></a>
+        <a href="http://www.linkedin.com/"><img src="/images/linkedin_32.png" title="click to see my LinkedIn profile" alt="click to see my LinkedIn profile" /></a>
+	</div>
+</div>
+
 <div id="header">
 	<div id="logo2">
 		<h1><a href="/"><%= Blog.title %></a></h1>
@@ -14,9 +42,6 @@
 
 <div id="content">
 	<%= yield %>
-  <% unless admin? %>
-    <div id="new_post"><a href="/auth">Log in</a></div>
-  <% end %>
 </div>
 
 <div id="footer">
@@ -24,5 +49,15 @@
 	Content by <%= Blog.author %> | 
 	Design adapted from <a href="http://www.freecsstemplates.org/preview/replenish">Replenish</a>
 </div>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-3525868-2");
+pageTracker._trackPageview();
+} catch(err) {}</script>
 </body>
 </html>

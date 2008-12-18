@@ -6,7 +6,6 @@ require 'syntax/convertors/html'
 
 class Post < CouchRest::Model
   use_database CouchRest.database!((Blog.url_base_database || '') + Blog.database_name)
-    
   key_accessor :title, :body, :slug, :tags, :not_public
   
   view_by :created_at, :descending=>true
@@ -104,11 +103,8 @@ class Post < CouchRest::Model
 
 	def to_html(markdown)
 		h = Maruku.new(markdown).to_html
-		h.gsub(/<code>([^<]+)<\/code>/m) do
-			convertor = Syntax::Convertors::HTML.for_syntax "ruby"
-			highlighted = convertor.convert($1)
-			"<code>#{highlighted}</code>"
-		end
+		h.gsub!(/<pre>/, "<pre class=\"prettyprint\">")
+		h
 	end
 
 	def split_content(string)

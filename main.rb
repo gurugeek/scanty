@@ -36,9 +36,10 @@ layout 'layout'
 get '/' do
   posts = []
   if admin?
-    posts = Post.by_created_at :count=>10
+    posts = Post.by_created_at :count=>3
+    @readers = FeedUser.by_uid.size
   else
-    posts = Post.by_created_at_and_public :count=>10
+    posts = Post.by_created_at_and_public :count=>3
   end
 	erb :index, :locals => { :posts => posts }, :layout => false
 end
@@ -84,12 +85,19 @@ get '/past/tags/:tag' do
 end
 
 get '/feed/:uid' do
-  user = FeedUser.by_uid :key=>:uid, :count=>1
-  user.first.last_access = Time.now
+  user = FeedUser.by_uid(:key=>params[:uid], :count=>1).first
+  user.last_access = Time.now
   user.save
 	@posts = Post.by_created_at_and_public :count=>10
 	content_type 'application/atom+xml', :charset => 'utf-8'
 	builder :feed
+end
+
+get '/robots.txt' do
+  content_type 'text/plain', :charset => 'utf-8'
+  'User-agent: *
+Disallow: /feed
+Disallow: /feed/'
 end
 
 get '/feed' do
@@ -100,6 +108,10 @@ end
 
 get '/rss' do
 	redirect '/feed', 301
+end
+
+get '/in_the_wild' do
+  erb :in_the_wild
 end
 
 ### Admin
@@ -152,3 +164,6 @@ post '/past/:year/:month/:day/:slug/' do
 	redirect post.url if post.save
 end
 
+get '/about' do
+  erb :about  
+end
