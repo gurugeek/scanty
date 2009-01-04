@@ -14,6 +14,7 @@ end
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/lib')
 require 'post'
 require 'user'
+require 'blog_ping'
 
 helpers do
 	def admin?
@@ -160,6 +161,9 @@ post '/past/:year/:month/:day/:slug/' do
   	post.not_public = true
 	else
 	  post.not_public = false
+    Thread.new {
+      Pingr.new(File.dirname(__FILE__) + "/config/" + Blog.ping_services).execute
+    }
 	end
 	redirect post.url if post.save
 end

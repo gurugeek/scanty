@@ -1,0 +1,9 @@
+<service name="weblogs.com" url="rpc.weblogs.com" path="/RPC2" />
+<service name="topicexchange" url="topicexchange.com" path="/RPC2" />
+<service name="technorati" url="rpc.technorati.com" path="/rpc/ping" />
+<service name="pubsub" url="xping.pubsub.com" path="/ping" />
+<service name="bloglines" url="www.bloglines.com" path="/ping" />
+<service name="blogpeople" url="www.blogpeople.net" path="/servlet/weblogUpdates" />
+<service name="pingomatic" url="rpc.pingomatic.com" path="/" />
+<service name="myyahoo" url="api.my.yahoo.com" path="/RPC2" />
+<service name="google" url="blogsearch.google.com" path="/ping/RPC2" />
