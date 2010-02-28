@@ -25,9 +25,8 @@ the starting point for your blog, too.
 == Dependencies
 
   $ gem install sinatra
-  $ gem install jchris-couchrest
 
-Maruku and Syntax are vendored. For now, CouchRest needs the Gem installed to work. 
+Maruku, Syntax, and CouchRest are vendored.
 
 == Setup
 
