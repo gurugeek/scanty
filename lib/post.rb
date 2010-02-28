@@ -1,21 +1,27 @@
-#require File.dirname(__FILE__) + '/../vendor/couchrest/couchrest'
+#require File.dirname(__FILE__) + '/../vendor/couchrest/lib/couchrest'
 require File.dirname(__FILE__) + '/../vendor/maruku/maruku'
 
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../vendor/syntax'
 require 'syntax/convertors/html'
 
-class Post < CouchRest::Model
+class Post < CouchRest::ExtendedDocument
   use_database CouchRest.database!((Blog.url_base_database || '') + Blog.database_name)
-  key_accessor :title, :body, :slug, :tags, :not_public
-  
+    
+  property :title 
+  property :body
+  property :slug
+  property :tags
+  property :not_public
+
   view_by :created_at, :descending=>true
   view_by :slug
   view_by :not_public
+
   view_by :created_at_and_public, :descending=>true,
     :map =>
       "function(doc) {
-        if(doc['couchrest-type'] == 'Post' && !doc['not_public']) {
-          emit(doc['created_at'],1);
+        if(doc.couchrest-type == 'Post' && !doc.not_public) {
+          emit(doc.created_at,1);
         }
       }",
     :reduce => 
@@ -104,6 +110,11 @@ class Post < CouchRest::Model
 	def to_html(markdown)
 		h = Maruku.new(markdown).to_html
 		h.gsub!(/<pre>/, "<pre class=\"prettyprint\">")
+		#h.gsub!(/<code>/, "<code class=\"prettyprint\">")
+			#convertor = Syntax::Convertors::HTML.for_syntax("ruby")
+			#highlighted = convertor.convert($1)
+			#"<code>#{highlighted}</code>"
+		#end
 		h
 	end
 

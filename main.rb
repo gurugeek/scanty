@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'sinatra'
 require 'config/app_config.rb'
-require 'couchrest'
+require 'vendor/couchrest/lib/couchrest'
 require 'uuid'
 
 error do
@@ -37,16 +37,16 @@ layout 'layout'
 get '/' do
   posts = []
   if admin?
-    posts = Post.by_created_at :count=>3
+    posts = Post.by_created_at :limit=>3
     @readers = FeedUser.by_uid.size
   else
-    posts = Post.by_created_at_and_public :count=>3
+    posts = Post.by_created_at_and_public :limit=>3
   end
 	erb :index, :locals => { :posts => posts }, :layout => false
 end
 
 get '/past/:year/:month/:day/:slug/' do
-  post = Post.by_slug(:key=>params[:slug], :count=>1).first	
+  post = Post.by_slug(:key=>params[:slug], :limit=>1).first	
   auth if post.not_public
 	stop [ 404, "Page not found" ] unless post
 	@title = post.title
@@ -86,10 +86,10 @@ get '/past/tags/:tag' do
 end
 
 get '/feed/:uid' do
-  user = FeedUser.by_uid(:key=>params[:uid], :count=>1).first
+  user = FeedUser.by_uid(:key=>params[:uid], :limit=>1).first
   user.last_access = Time.now
   user.save
-	@posts = Post.by_created_at_and_public :count=>10
+	@posts = Post.by_created_at_and_public :limit=>10
 	content_type 'application/atom+xml', :charset => 'utf-8'
 	builder :feed
 end
@@ -145,14 +145,14 @@ end
 
 get '/past/:year/:month/:day/:slug/edit' do
 	auth
-	post = Post.by_slug(:key=>params[:slug], :count=>1).first
+	post = Post.by_slug(:key=>params[:slug], :limit=>1).first
 	stop [ 404, "Page not found" ] unless post
 	erb :edit, :locals => { :post => post, :url => post.url }
 end
 
 post '/past/:year/:month/:day/:slug/' do
 	auth
-  post = Post.by_slug(:key=>params[:slug], :count=>1).first
+  post = Post.by_slug(:key=>params[:slug], :limit=>1).first
 	stop [ 404, "Page not found" ] unless post
 	post.title = params[:title]
 	post.tags = parse_tags(params[:tags])
